@@ -1,5 +1,4 @@
 import numpy as np
-import datetime
 import cv2
 from ultralytics import YOLO
 
@@ -32,10 +31,6 @@ for num in range(0,8):
     blue_high = np.array([20, 13, 5], dtype=np.int64)
     blue = [blue_low, blue_high, 'blue'] 
     
-    white_low = np.array([90,95,0], dtype=np.int64)
-    white_high = np.array([160,160,15], dtype=np.int64)
-    white = [white_low, white_high, 'white']
-
     # detect objects in cropped frame that contains machine
     results = model(cropped)
     mask = None

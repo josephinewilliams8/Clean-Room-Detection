@@ -38,17 +38,11 @@ while True:
 
         # show the cropped image
         cropped = image[topx:botx+1, topy:boty+1]
-        cv2.imwrite(f'video_frames/cropped{num}.jpg', cropped)
 
         # declaring bounds to find blue suit if it is in the cropped image
         blue_low = np.array([0,0,0], dtype=np.int64)
         blue_high = np.array([20, 13, 5], dtype=np.int64)
-        blue = [blue_low, blue_high, 'blue'] 
-        
-        white_low = np.array([90,95,0], dtype=np.int64)
-        white_high = np.array([160,160,15], dtype=np.int64)
-        white = [white_low, white_high, 'white']
-
+    
         # detect objects in cropped frame that contains machine
         results = model(cropped)
         mask = None
@@ -72,16 +66,15 @@ while True:
                 # if there is a person, check the color of their suit using color masking.
                 if class_id == 0:
                     bluebool = 0
-                    print(num, 'spotted person')
+                    print(f'spotted person in frame {num} with {confidence*100:.2f}% confidence.')
                     print(confidence, 'confidence')
                     if confidence > conf_threshold:
                         if count != 0:
                             continue
                         
                         # creating a mask for the selected color.
-                        mask = cv2.inRange(cropped, blue[0], blue[1])
-                        colorname = blue[2]
-                        contour, _ = cv2.findContours(mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
+                        blue_mask = cv2.inRange(cropped, blue_low, blue_high)
+                        contour, _ = cv2.findContours(blue_mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
                         
                         # confirming the color of the suit. 
                         for cnt in contour:
@@ -90,13 +83,14 @@ while True:
                                 if count != 0:
                                     continue
                                 count = 1
-                                print(f'for frame {num}, {colorname} suit was detected.')
+                                print(f'for frame {num}, a blue suit was detected.')
+                                cv2.imwrite(f'video_frames/cropped{num}.jpg', img)
                                 bluebool = True
                         if not bluebool:
-                            print(f'for frame {num}, white suit was detected.')
+                            print(f'for frame {num}, a white suit was detected.')
+                            cv2.imwrite(f'video_frames/cropped{num}.jpg', img)
                             count = 1
             
-
             if count ==0:
                 print(f'for figure {num}, no one was detected.')
         num += 1
