@@ -58,28 +58,32 @@ for num in range(0,8):
             # check if there is a person near our machine (person: class_id == 0)
             # if there is a person, check the color of their suit using color masking.
             if class_id == 0:
+                bluebool = 0
                 print(num, 'spotted person')
                 print(confidence, 'confidence')
                 if confidence > conf_threshold:
-                    for color in [white, blue]:
-                        if count != 0:
-                            continue
+                    if count != 0:
+                        continue
                         
-                        # creating a mask for the selected color.
-                        mask = cv2.inRange(cropped, color[0], color[1])
-                        colorname = color[2]
-                        contour, _ = cv2.findContours(mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
+                    # creating a mask for the selected color.
+                    mask = cv2.inRange(cropped, blue[0], blue[1])
+                    colorname = blue[2]
+                    contour, _ = cv2.findContours(mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
+                    
+                    # confirming the color of the suit. 
+                    for cnt in contour:
+                        contour_area = cv2.contourArea(cnt)
+                        if contour_area > 1000:
+                            if count != 0:
+                                continue
+                            count = 1
+                            print(f'for frame {num}, {colorname} suit was detected.')
+                            bluebool = True
+                    if not bluebool:
+                        print(f'for frame {num}, white suit was detected.')
+                        count = 1
+                    
                         
-                        # confirming the color of the suit. 
-                        for cnt in contour:
-                            contour_area = cv2.contourArea(cnt)
-                            if contour_area > 500:
-                                if count != 0:
-                                    continue
-                                count = 1
-                                print(f'for figure {num}, {colorname} suit was detected.')
-                                cv2.imshow(f'{colorname} mask', cropped)
-                                cv2.waitKey(0)
         
 
         if count ==0:
