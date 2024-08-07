@@ -20,7 +20,7 @@ botx = 660
 
 # load the images we want to investigate
 for num in range(0,8):
-    img = cv2.imread(f"cleanroom{num}.jpg", cv2.IMREAD_UNCHANGED)
+    img = cv2.imread(f"cleanroom_pics/cleanroom{num}.jpg", cv2.IMREAD_UNCHANGED)
     frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)    
     
     # show the cropped image

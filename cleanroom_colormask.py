@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('cleanroom2.jpg')
+img = cv2.imread('cleanroom_pics/cleanroom2.jpg')
 
 #converting to an hsv image
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
