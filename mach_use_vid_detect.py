@@ -9,7 +9,7 @@ fps = int(cap.get(cv2.CAP_PROP_FPS))
 conf_threshold = 0.7
 
 # initialize our trained model for image recognition
-model = YOLO("best.pt")
+model = YOLO("best0.pt")
 
 # confirm the video capture is initialized
 if not cap.isOpened():

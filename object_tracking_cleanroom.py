@@ -8,7 +8,7 @@ from ultralytics import YOLO
 conf_threshold = 0.4
 
 # initialize the model for image recognition
-model = YOLO("best.pt")
+model = YOLO("best0.pt")
 
 # cropping image just to the box around the machine we want to detect
 # update these values to change the corners of our rectangle frame
