@@ -9,12 +9,12 @@ cv2.imshow('cleanroom', rgb)
 cv2.waitKey(0)
 
 # declaring bounds to find color mask
-blue_low = np.array([0,0,0], dtype=np.int64)
-blue_high = np.array([23, 20, 5], dtype=np.int64)
+teal_low = np.array([38,45,0], dtype=np.int64)
+teal_high = np.array([90, 140, 20], dtype=np.int64)
 
-mask = cv2.inRange(rgb, blue_low, blue_high)
+mask = cv2.inRange(rgb, teal_low, teal_high)
 countour, _ = cv2.findContours(mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
 
 # show the contoured image
-cv2.imshow('blue mask', mask)
+cv2.imshow('teal mask', mask)
 cv2.waitKey(0)

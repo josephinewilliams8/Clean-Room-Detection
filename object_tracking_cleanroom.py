@@ -5,10 +5,10 @@ from ultralytics import YOLO
 # from helper import create_video_writer
 
 # the confidence threshold makes sure that we do not classify an object when we are not entirely confident about what it is.
-conf_threshold = 0.5
+conf_threshold = 0.4
 
 # initialize the model for image recognition
-model = YOLO("yolov8n.pt")
+model = YOLO("best.pt")
 
 # cropping image just to the box around the machine we want to detect
 # update these values to change the corners of our rectangle frame
@@ -18,31 +18,22 @@ topx = 420
 botx = 660
 
 # load the images we want to investigate
-for num in range(0,8):
-    img = cv2.imread(f"cleanroom_pics/cleanroom{num}.jpg", cv2.IMREAD_UNCHANGED)
+for num in range(0,3):
+    img = cv2.imread(f"tester/test{num}.jpg", cv2.IMREAD_UNCHANGED)
     frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)    
     
     # show the cropped image
     cropped = frame[topx:botx+1, topy:boty+1]
     cv2.imwrite('cropped.jpg', cropped)
 
-    # declaring bounds to find blue suit if it is in the cropped image
-    blue_low = np.array([0,0,0], dtype=np.int64)
-    blue_high = np.array([20, 13, 5], dtype=np.int64)
-    blue = [blue_low, blue_high, 'blue'] 
-    
     # detect objects in cropped frame that contains machine
-    results = model(cropped)
-    mask = None
+    results = model(img)
 
     # UNCOMMENT PRINT STATEMENT BELOW: see more details about what our model detects in the frame.
     # print(results[0].boxes)
 
     # loop over the results
     for result in results:
-        # initialize the list of bounding boxes, confidences, and class IDs
-        confidences = []
-        class_ids = []
         count = 0
         
         # loop over the detections
@@ -53,33 +44,14 @@ for num in range(0,8):
             # check if there is a person near our machine (person: class_id == 0)
             # if there is a person, check the color of their suit using color masking.
             if class_id == 0:
-                bluebool = 0
-                print(num, 'spotted person')
-                print(confidence, 'confidence')
-                if confidence > conf_threshold:
-                    if count != 0:
-                        continue
-                        
-                    # creating a mask for the selected color.
-                    mask = cv2.inRange(cropped, blue[0], blue[1])
-                    colorname = blue[2]
-                    contour, _ = cv2.findContours(mask, mode = cv2.RETR_EXTERNAL, method = cv2.CHAIN_APPROX_NONE)
+                count += 1
+                print(f'navy suit spotted with {100*confidence:.2f}% confidence')
+            if class_id == 1:
+                count += 1
+                print(f'teal suit spotted with {100*confidence:.2f}% confidence')
+            if class_id == 2:
+                count += 1
+                print(f'white suit spotted with {100*confidence:.2f}% confidence')
                     
-                    # confirming the color of the suit. 
-                    for cnt in contour:
-                        contour_area = cv2.contourArea(cnt)
-                        if contour_area > 1000:
-                            if count != 0:
-                                continue
-                            count = 1
-                            print(f'for frame {num}, {colorname} suit was detected.')
-                            bluebool = True
-                    if not bluebool:
-                        print(f'for frame {num}, white suit was detected.')
-                        count = 1
-                    
-                        
-        
-
         if count ==0:
             print(f'for figure {num}, no one was detected.')
