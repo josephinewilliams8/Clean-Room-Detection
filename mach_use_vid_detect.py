@@ -1,20 +1,29 @@
 import cv2
 from ultralytics import YOLO
+import pandas as pd
+
+# load our csv file
+csv = 'Cleanroom Tracking.csv'
+df = pd.read_csv(csv)
 
 # initialize video capture
-cap = cv2.VideoCapture('<VIDEO PATH HERE>')
-fps = int(cap.get(cv2.CAP_PROP_FPS))
+filename = '3_2024-07-18_11-18-17.mp4'
+cap = cv2.VideoCapture(filename)
+fps = cap.get(cv2.CAP_PROP_FPS)
+
+#initialize start time
+date = filename[:-4].split('_')[1]
+starttime = list(map(int, filename[:-4].split('_')[2].split('-')))
+machine = 'Brewer00'
 
 # set our confidence threshold
 conf_threshold = 0.7
 
 # initialize our trained model for image recognition
 model = YOLO("best1.pt")
-white = 0
-teal = 0
-navy = 0
+white, teal, navy = 0, 0, 0
 
-def frames_to_timecode(frame, fps):
+def frames_to_timecode(frame, fps, start):
     """Given the fps of a given video, will give
     the timestamp of any specific frame.
 
@@ -27,15 +36,12 @@ def frames_to_timecode(frame, fps):
     Returns:
         str: string giving the timestamp of the desired frame.
     """
-    seconds = round(frame/fps)
+    hr0, min0, sec0 = start
+    startseconds = hr0 * 3600 + min0 * 60 + sec0 + 9
+    seconds = frame // fps + startseconds
+    hr, min, sec = seconds // 3600, (seconds // 60) % 60, seconds % 60
     
-    hr = round(seconds/3600)
-    
-    min = round(seconds/60) - hr*60
-    
-    sec = seconds - hr*3600 - min*60
-    
-    return f'the time is {hr}:{min}:{sec}'
+    return f'{int(hr):02d}:{int(min):02d}:{int(sec):02d}'
     
 
 # confirm the video capture is initialized
@@ -43,72 +49,57 @@ if not cap.isOpened():
     print("Error: Unable to open video stream")
 
 # pixels to crop the video to zoom in on the specific machine
-topy = 230
-boty = 460
-topx = 480
-botx = 755
+topy, boty, topx, botx = 230, 460, 480, 755
 
-length = 30 #seconds
+length = 60 #seconds
 frame = 0
 num = 0
 
 while True:
+    # skip frames to process every `length` seconds
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
+
     ret, img = cap.read()
-    
     if not ret:
         print("Error: Unable to read frame from video stream!")
         break
+
+    # crop and process the image
+    cropped = img[topx:botx+1, topy:boty+1]
+    results = model(cropped)
+
+    # save the cropped image for reference
+    cv2.imwrite(f'video_frames/cropped{num}.jpg', img)
     
-    # process image to check for any human activity every 30 seconds
-    if frame%(length*fps) == 0:
-        image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)    
 
-        # show the cropped image
-        cropped = img[topx:botx+1, topy:boty+1]
-        
-        # detect color suit in cropped frame that contains machine
-        results = model(cropped)
+    # initialize detection counters
+    detected_classes = {0: 0, 1: 0, 2: 0}
+    color_ids = {0: 'navy', 1: 'teal', 2: 'white'}
 
-        # save what the cropped image looks like to judge results of model
-        cv2.imwrite(f'video_frames/cropped{num}.jpg', image)
-        
-        # UNCOMMENT PRINT STATEMENT BELOW: see more details about what our model detects in the frame.
-        # print(results[0].boxes)
+    # loop over the results
+    for result in results:
+        for data in result.boxes.data.tolist():
+            _, _, _, _, confidence, class_id = data
+            class_id = int(class_id)
 
-        # loop over the results
-        for result in results:
-            count = 0
-            
-            # loop over the detections
-            for data in result.boxes.data.tolist():
-                _, _, _, _, confidence, class_id = data
-                class_id = int(class_id)
-                if count != 0:
-                    continue
+            if confidence >= conf_threshold:
+                detected_classes[class_id] += 1
+
+                color = color_ids[class_id]
                 
-                if class_id == 0:
-                    count += 1
-                    # print(f'navy suit spotted with {100*confidence:.2f}% confidence')
-                    navy += 1
-                    if navy >= 2:
-                        print(f'navy suit is using the machine at image {num}')
-                if class_id == 1:
-                    count += 1
-                    # print(f'teal suit spotted with {100*confidence:.2f}% confidence')
-                    teal += 1
-                    if teal >= 2:
-                        print(f'teal suit is using the machine at image {num}')
-                if class_id == 2:
-                    count += 1
-                    # print(f'white suit spotted with {100*confidence:.2f}% confidence')
-                    white += 1
-                    if white >= 2:
-                        print(f'white suit is using the machine at image {num}')
-                
-            if count == 0:
-                print(f'for figure {num}, no one was detected.')
-                navy = 0
-                teal = 0
-                white = 0
-        num += 1
-    frame += 1
+                # calculate time and send data to csv
+                print(f'{color} suit is using the machine at image {num}')
+                time = frames_to_timecode(frame, fps, starttime)
+                new_data = [date, time, color, machine]
+                df.loc[len(df)] = new_data
+                df.to_csv(csv, mode='w', header=True, index=False)
+                break
+    
+    # reset counters if no one detected
+    if all(value == 0 for value in detected_classes.values()):
+        print(f'for figure {num}, no one was detected.')
+        print(f'at image {num} the time is supposed to be {frames_to_timecode(frame, fps, starttime)}')
+        navy = teal = white = 0
+
+    num += 1
+    frame += int(length * fps)
