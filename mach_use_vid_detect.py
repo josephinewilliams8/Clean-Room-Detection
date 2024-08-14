@@ -36,6 +36,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
             like to know the time stamp of
             fps (float): number of frames per second in the
             relevant video. 
+            start (list): the start time of the video file
 
         Returns:
             str: string giving the timestamp of the desired frame.
