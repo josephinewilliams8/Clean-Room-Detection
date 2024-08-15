@@ -1,7 +1,7 @@
 # Cleanroom Suit Detection
 In this repository, we use an object recognition model to detect people wearing different coloured labcoats 
 working on a Brewer Resist Machine in a cleanroom. The model uses weights that are generated using transfer 
-learning on the pre-trained YOLOv8 small model. 
+learning on the pre-trained YOLOv8 model. 
 
 Click on [this link](https://github.com/ultralytics/ultralytics) to learn more about YOLO models!
 
@@ -28,7 +28,7 @@ Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8)
 the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code 
 extract below).
 
-Now, log into Google Colab. In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
+Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
     
     !pip install ultralytics
     
@@ -45,3 +45,10 @@ the training data.
 Once the program has completed, using the navigation folders on the left side, go into 'content>runs>detect>train>weights' and you 
 should see the file 'best.pt.' This file contains the weights that are used in our program, so save the .pt file to your
 computer and update line 131 in 'mach_use_vid_detect.py.'
+
+# Selecting Machine
+In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' After inserting the file path
+to any video frame from the security footage in line 13, run the code. Click and drag your mouse to create a box around the machine. 
+
+After lifting the mouse, there will be a print statement with the dimensions x1, x2, y1, and y2. Update line 74 in 'mach_use_vid_detect.py'
+with these dimensions to track equipment usage by that machine. 
