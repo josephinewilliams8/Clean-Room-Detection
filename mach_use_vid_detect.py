@@ -11,12 +11,29 @@ def main():
     # initialize video capture
     folder_path = r'<ENTER FOLDER PATH WITH SECURITY FOOTAGE>'
     filenum = 0
+    
+    # pass all of the video footage in from a given folder
     for file in os.listdir(folder_path):
         if file.endswith(".mp4"):
             path = os.path.join(folder_path, file)
             filenum = process_cleanroom_vid(file, path, csv, df, filenum)
 
 def process_cleanroom_vid(filename, filepath, csv, df, filenum):
+    """Video footage is passed in along with the path of the file, path to the 
+    CSV file, path to the dataframe, and number of the frame of the last
+    object detection.
+    Loads cleanroom data into the CSV file.
+
+    Args:
+        filename (str): Name of video file ending in '.mp4'
+        filepath (str): Path to the file on the computer.
+        csv (str): Path to CSV file that stores cleanroom data.
+        df (str): Path to the dataframe which helps to update the CSV file.
+        filenum (int): Count of the last frame that detected an object
+
+    Returns:
+        int: The number of the last frame that detected an object.
+    """
     cap = cv2.VideoCapture(filepath)
     fps = cap.get(cv2.CAP_PROP_FPS)
 
@@ -55,7 +72,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
 
     # pixels to crop the video to zoom in on the specific machine
     topy, boty, topx, botx = 230, 460, 480, 755
-    machine = 'Brewer00'
+    machine = 'Brewer00 Resist'
 
     length = 60 #seconds
     frame = 0
@@ -78,7 +95,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
     
         # initialize detection counters
         detected_classes = {0: 0, 1: 0, 2: 0}
-        color_ids = {0: 'navy', 1: 'teal', 2: 'white'}
+        color_ids = {0: 'Blue', 1: 'Green', 2: 'White'}
 
         # loop over the results
         for result in results:
@@ -91,28 +108,29 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
                     color = color_ids[class_id]
                     
                     # calculate time and send data to csv
-                    print(f'{color} suit is using the machine at image {num}')
+                    print(f'{color} suit is using the machine in image {filenum}.')
+                    cv2.imwrite(f'video_frames/cropped{filenum}.jpg', img)
+                    
                     time = frames_to_timecode(frame, fps, starttime)
                     new_data = [date, time, color, machine]
                     df.loc[len(df)] = new_data
                     df.to_csv(csv, mode='w', header=True, index=False)
-                    cv2.imwrite(f'video_frames/cropped{filenum}.jpg', img)
                     filenum += 1
                     break
         
         # reset counters if no one detected
         if all(value == 0 for value in detected_classes.values()):
-            print(f'for figure {num}, no one was detected.')
-            print(f'at image {num} the time is supposed to be {frames_to_timecode(frame, fps, starttime)}')
+            print(f'no one was detected.')
 
         frame += int(length * fps)
     return filenum
 
 if __name__ == "__main__":
-    global num
-    num = 0
     
     # initialize our trained model for image recognition
     model = YOLO("best1.pt")
     
     main()
+    
+    
+    
