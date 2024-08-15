@@ -1,25 +1,29 @@
 import cv2
 from ultralytics import YOLO
+import os
 
 # initialize variables and model
-pic = 180
 conf_threshold = 0.4
 model = YOLO("yolov8n.pt")
+pic = 0
 
-topy = 230
-boty = 460
-topx = 480
-botx = 755
+def save_photos(path):
+    """Function to save photos which can be later be trained to a folder
+    under the name "cleanroom_pics"
 
-for num in range(3,4):
-    video_url = f'cr{num}.mp4'
-    cap = cv2.VideoCapture(video_url)
+    Args:
+        path (str): path to folder containing .mp4 videos
+    """
+    global pic
+    cap = cv2.VideoCapture(path)
     nframes = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-
+    # boundary in which we want to crop each frame to
+    x1, x2, y1, y2 = 230, 460, 480, 755
+    
     for frame in range(nframes):
         ret, img = cap.read()
-        image = img[topx:botx+1, topy:boty+1]
+        image = img[y1:y2+1, x1:x2+1]
         if ret == False:
             break
         
@@ -32,11 +36,6 @@ for num in range(3,4):
 
             # loop over the results
             for result in results:
-                # initialize the list of bounding boxes, confidences, and class IDs
-                confidences = []
-                class_ids = []
-                count = 0
-                
                 # loop over the detections
                 for data in result.boxes.data.tolist():
                     _, _, _, _, confidence, class_id = data
@@ -46,6 +45,13 @@ for num in range(3,4):
                     # if there is a person, check the color of their suit using color masking.
                     if class_id == 0:
                         if confidence > conf_threshold:
-                            cv2.imwrite(f'crpics/photo{pic}.jpg', image)
+                            cv2.imwrite(f'cleanroom_pics/photo{pic}.jpg', image)
                             print(frame)
                             pic += 1
+
+# save images from video footage to create a training set that can be annotated
+folderpath = '<PATH TO FOLDER CONTAINING SAMPLE FOOTAGE>'
+for file in os.listdir(folderpath):
+        if file.endswith(".mp4"):
+            path = os.path.join(folderpath, file)
+            save_photos(path)
