@@ -1,7 +1,7 @@
 # Cleanroom Suit Detection
 In this repository, we use an object recognition model to detect people wearing different coloured labcoats 
 working on a Brewer Resist Machine in a cleanroom. The model uses weights that are generated using transfer 
-learning on the pre-trained YOLOv8 small model. 
+learning on the pre-trained YOLOv8 model. 
 
 Click on [this link](https://github.com/ultralytics/ultralytics) to learn more about YOLO models!
 
