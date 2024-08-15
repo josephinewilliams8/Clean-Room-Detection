@@ -47,8 +47,8 @@ should see the file 'best.pt.' This file contains the weights that are used in o
 computer and update line 131 in 'mach_use_vid_detect.py.'
 
 # Selecting Machine
-In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' By inserting the file path
-to any video frame from the security footage, click and drag your mouse to create a box around the machine. 
+In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' After inserting the file path
+to any video frame from the security footage in line 13, run the code. Click and drag your mouse to create a box around the machine. 
 
 After lifting the mouse, there will be a print statement with the dimensions x1, x2, y1, and y2. Update line 74 in 'mach_use_vid_detect.py'
 with these dimensions to track equipment usage by that machine. 
