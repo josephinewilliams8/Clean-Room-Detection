@@ -3,6 +3,8 @@ In this repository, we use an object recognition model to detect people wearing 
 working on a Brewer Resist Machine in a cleanroom. The model uses weights that are generated using transfer 
 learning on the pre-trained YOLOv8 small model. 
 
+Click on [this link](https://github.com/ultralytics/ultralytics) to learn more about YOLO models!
+
 The weights were created by annotating 120 images of workers in the cleanroom in their different colours. 
 After image augmentations were performed, over 450 new images were added to the dataset for training. 
 
