@@ -45,3 +45,10 @@ the training data.
 Once the program has completed, using the navigation folders on the left side, go into 'content>runs>detect>train>weights' and you 
 should see the file 'best.pt.' This file contains the weights that are used in our program, so save the .pt file to your
 computer and update line 131 in 'mach_use_vid_detect.py.'
+
+# Selecting Machine
+In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' By inserting the file path
+to any video frame from the security footage, click and drag your mouse to create a box around the machine. 
+
+After lifting the mouse, there will be a print statement with the dimensions x1, x2, y1, and y2. Update line 74 in 'mach_use_vid_detect.py'
+with these dimensions to track equipment usage by that machine. 
