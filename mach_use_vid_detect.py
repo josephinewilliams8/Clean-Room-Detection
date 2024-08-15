@@ -71,9 +71,8 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
         print("Error: Unable to open video stream")
 
     # pixels to crop the video to zoom in on the specific machine
-    topy, boty, topx, botx = 230, 460, 480, 755
+    x1, x2, y1, y2 = 230, 460, 480, 755
     machine = 'Brewer00 Resist'
-
     length = 60 #seconds
     frame = 0
 
@@ -87,7 +86,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
             break
 
         # crop and process the image
-        cropped = img[topx:botx+1, topy:boty+1]
+        cropped = img[y1:y2+1, x1:x2+1]
         results = model(cropped)
 
         # save the cropped image for reference
