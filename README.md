@@ -28,7 +28,7 @@ Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8)
 the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code 
 extract below).
 
-Now, log into Google Colab. In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
+Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
     
     !pip install ultralytics
     
