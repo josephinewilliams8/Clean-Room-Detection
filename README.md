@@ -23,15 +23,15 @@ To start off, we are going to save frames from security footage where a human ha
 
 Copy the path to this folder containing the small set of security footage, then open up the script 'cleanroom_photos.py.' Insert the path in line 70, which is currently set to be:
 
-        folderpath = r'<INSERT PATH TO SAMPLE FOOTAGE FOLDER HERE>'
+    folderpath = r'<INSERT PATH TO SAMPLE FOOTAGE FOLDER HERE>'
 
 Then, run the script. If done correctly, then the program will iterate through the videos in the folder, saving frames which contain a person in them to the folder 'cleanroom_pics.' The default is that the script will save uncropped images to the folder, but by commenting out the line:
 
-        cv2.imwrite(f'cleanroom_pics/photo{pic}.jpg', raw_img)
+    cv2.imwrite(f'cleanroom_pics/photo{pic}.jpg', raw_img)
 
 and uncommenting the line:
 
-        cv2.imwrite(f'cleanroom_pics/photo{pic}.jpg', machine_cropped)
+    cv2.imwrite(f'cleanroom_pics/photo{pic}.jpg', machine_cropped)
 
 as well as fixing line 30 with the correct cropped dimensions (which can be determined with find_crop_dimensions.py), the script will save cropped images to the folder. 
 
@@ -52,6 +52,7 @@ Now, we can generate the dataset. For pre-processing, some steps are to auto ori
 
 Click 'Export Dataset' and save as a zip file. Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8), 'Extract All' from the folder and save the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code extract below).
 
+**USING GOOGLE COLAB TO MAKE WEIGHTS**
 Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
     
     !pip install ultralytics
