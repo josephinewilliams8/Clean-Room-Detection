@@ -3,6 +3,14 @@ from ultralytics import YOLO
 import pandas as pd
 import os
 
+# https://github.com/josephinewilliams8 
+
+# BEFORE RUNNING THIS CODE: 
+# 1) make sure that any required paths are updated
+# 2) if not already present, create a folder called 'cleanroom_pics'
+# 3) if not already present, create a folder called 'video_frames'
+# 4) refer to README.md for any other questions
+
 def main():
     # load our csv file
     csv = 'Cleanroom Tracking.csv'
@@ -93,6 +101,8 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
         # cv2.imwrite(f'video_frames/cropped{num}.jpg', img)
     
         # initialize detection counters
+        # note: can change color_ids to reflect different company names
+        # note: if more classes are added, update the two following dictionaries
         detected_classes = {0: 0, 1: 0, 2: 0}
         color_ids = {0: 'Blue', 1: 'Green', 2: 'White'}
 
@@ -119,7 +129,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
         
         # reset counters if no one detected
         if all(value == 0 for value in detected_classes.values()):
-            print(f'no one was detected.')
+            print(f'No one was detected.')
 
         frame += int(length * fps)
     return filenum
