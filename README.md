@@ -19,6 +19,7 @@ For confidentiality reasons, the company names are replaced by the colours of th
 
 # Retraining Model
 **SAVING IMAGES TO ANNOTATE**
+
 To start off, we are going to save frames from security footage where a human has been detected. These frames will be used to train our model on the different coloured suits that are worn in the cleanroom. We will first need a folder that contains a small set of security footage -- it is helpful if the footage is from different days, to make sure we have a variety of data. For the first run-through of this program, three 15-minute videos were used. 
 
 Copy the path to this folder containing the small set of security footage, then open up the script 'cleanroom_photos.py.' Insert the path in line 70, which is currently set to be:
@@ -36,6 +37,7 @@ and uncommenting the line:
 as well as fixing line 30 with the correct cropped dimensions (which can be determined with find_crop_dimensions.py), the script will save cropped images to the folder. 
 
 **SAVING DATASET OF IMAGES**
+
 Once we have our cleanroom_pics folder, we can start creating our annotated dataset. This method uses [Roboflow](https://roboflow.com/), because of its annotation tools, augmentation tools, and ability to separate into training/testing sets in a data.yaml file. 
 
 Once signed into Roboflow, create a project if one doesn't already exist. Set up the project for 'Object Detection' when given the option. Then, as Roboflow asks for the classes, list the color names you would like to detect and separate them with commas. 
@@ -53,6 +55,7 @@ Now, we can generate the dataset. For pre-processing, some steps are to auto ori
 Click 'Export Dataset' and save as a zip file. Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8), 'Extract All' from the folder and save the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code extract below).
 
 **USING GOOGLE COLAB TO MAKE WEIGHTS**
+
 Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
     
     !pip install ultralytics
