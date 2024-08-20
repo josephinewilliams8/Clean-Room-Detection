@@ -17,16 +17,12 @@ To run the program, enter the path to the folder of video footage that you would
 by right-clicking the folder in finder, and then clicking 'Copy as Path.'
 
 For confidentiality reasons, the company names are replaced by the colours of their suit. This information can be edited
-in line 98 of "mach_use_vid_detect.py."
+in line 107 of "mach_use_vid_detect.py."
 
 # Retraining Model
-If new images need to be added to the dataset, the file "cleanroom_photos.py" saves images with a person in frame to 
-a folder called 'crpics.' These images can be annotated in [Roboflow](https://roboflow.com/), which will separate the model into training, testing,
-and validation sets which can be downloaded to any device. 
+If new images need to be added to the dataset, the file "cleanroom_photos.py" saves images with a person in frame to a folder called 'crpics.' These images can be annotated in [Roboflow](https://roboflow.com/), which will separate the model into training, testing, and validation sets which can be downloaded to any device. 
 
-Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8), 'Extract All' from the folder and save 
-the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code 
-extract below).
+Once the dataset is downloaded (it should be a ZIP folder which ends in .yolov8), 'Extract All' from the folder and save the folder to a Google Drive account (the path of this folder should be copied in place of **INSERT FOLDER PATH HERE** in the code extract below).
 
 Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change runtime to T4 GPU, and make sure to Mount Google Drive. Copy the following code:
     
@@ -38,17 +34,11 @@ Now, log into [Google Colab](https://colab.google.com/). In Google Colab, change
 
     model.train(data='/content/drive/MyDrive/<INSERT FOLDER PATH HERE>/data.yaml', epochs=80)
 
-Run each line in order. This process can take around 30 minutes, but may be longer or shorter depending on how many epochs 
-are used. If more epochs are used, the model may appear more accurate but increases the risk of overfitting the model to 
-the training data. 
+Run each line in order. This process can take around 30 minutes, but may be longer or shorter depending on how many epochs are used. If more epochs are used, the model may appear more accurate but increases the risk of overfitting the model to the training data. 
 
-Once the program has completed, using the navigation folders on the left side, go into 'content>runs>detect>train>weights' and you 
-should see the file 'best.pt.' This file contains the weights that are used in our program, so save the .pt file to your
-computer and update line 131 in 'mach_use_vid_detect.py.'
+Once the program has completed, using the navigation folders on the left side, go into 'content>runs>detect>train>weights' and you should see the file 'best.pt.' This file contains the weights that are used in our program, so save the .pt file to your computer and update line 140 in 'mach_use_vid_detect.py.'
 
 # Selecting Machine
-In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' After inserting the file path
-to any video frame from the security footage in line 13, run the code. Click and drag your mouse to create a box around the machine. 
+In order to crop the selected frame to locate a particular machine, open the file 'find_crop_dimensions.py.' After inserting the file path to any video frame from the security footage in line 19 (.jpg or .png images work best), run the code. Click and drag your mouse to create a box around the machine. 
 
-After lifting the mouse, there will be a print statement with the dimensions x1, x2, y1, and y2. Update line 74 in 'mach_use_vid_detect.py'
-with these dimensions to track equipment usage by that machine. 
+After lifting the mouse, there will be a print statement with the dimensions x1, x2, y1, and y2. Copy these dimensions, and update line 82 in 'mach_use_vid_detect.py' with these dimensions to track equipment usage by that machine. 
