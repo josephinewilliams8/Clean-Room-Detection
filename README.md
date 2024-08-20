@@ -42,9 +42,7 @@ Once we have our cleanroom_pics folder, we can start creating our annotated data
 
 Once signed into Roboflow, create a project if one doesn't already exist. Set up the project for 'Object Detection' when given the option. Then, as Roboflow asks for the classes, list the color names you would like to detect and separate them with commas. 
 
-Next, select the cleanroom_pics folder to upload images. After they are uploaded, use Roboflow's tools to manually annotate each image with any suits/suit colors that are observed. When it comes to annotating images, refer to the following examples of well labeled/poorly labeled data:
-
-INSERT EXAMPLE HERE
+Next, select the cleanroom_pics folder to upload images. After they are uploaded, use Roboflow's tools to manually annotate each image with any suits/suit colors that are observed. When it comes to annotating images, [this link](https://www.superannotate.com/blog/introduction-to-bounding-box-annotation-best-practices) does a good job at explaining how/why we might use bounding box annotations. 
 
 Once all of the images have been annotated, check over the set to make sure everything is labeled properly and choose the partitions for the training/testing sets. A good separation might be 70% training, 15% validation, and 15% testing. 
 
