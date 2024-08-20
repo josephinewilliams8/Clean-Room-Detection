@@ -31,6 +31,9 @@ def save_photos(path):
     
     for frame in range(nframes):
         ret, raw_img = cap.read()
+        if not ret:
+            print("Error: Unable to read frame from video stream!")
+            break
         machine_cropped = raw_img[y1:y2+1, x1:x2+1]
         if ret == False:
             break
@@ -64,7 +67,7 @@ def save_photos(path):
                             pic += 1
 
 # save images from video footage to create a training set that can be annotated
-folderpath = '<INSERT FILE PATH HERE TO SAMPLE VIDEO FOOTAGE>'
+folderpath = r'<INSERT PATH TO SAMPLE FOOTAGE FOLDER HERE>'
 for file in os.listdir(folderpath):
         if file.endswith(".mp4"):
             path = os.path.join(folderpath, file)

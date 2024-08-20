@@ -16,7 +16,7 @@ def onselect(eclick, erelease):
     print(f'x1, x2, y1, y2 = {x1},{x2},{y1},{y2}')
 
 # Open an image file
-img = Image.open('<INSERT PATH TO EXAMPLE CLEANROOM IMAGE>')
+img = Image.open('<INSERT PATH TO SAMPLE FRAME HERE>')
 arr = np.asarray(img)
 
 fig, ax = plt.subplots()

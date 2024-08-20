@@ -17,7 +17,7 @@ def main():
     df = pd.read_csv(csv)
 
     # initialize video capture
-    folder_path = r'<ENTER FOLDER PATH WITH SECURITY FOOTAGE>'
+    folder_path = r'<INSERT PATH TO SECURITY FOOTAGE FOLDER HERE>'
     filenum = 0
     
     # pass all of the video footage in from a given folder
@@ -45,7 +45,7 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
     cap = cv2.VideoCapture(filepath)
     fps = cap.get(cv2.CAP_PROP_FPS)
 
-    #initialize start time
+    # initialize start time
     date = filename[:-4].split('_')[1]
     starttime = list(map(int, filename[:-4].split('_')[2].split('-')))
 
@@ -73,7 +73,6 @@ def process_cleanroom_vid(filename, filepath, csv, df, filenum):
         
         return f'{int(hr):02d}:{int(min):02d}:{int(sec):02d}'
         
-
     # confirm the video capture is initialized
     if not cap.isOpened():
         print("Error: Unable to open video stream")
